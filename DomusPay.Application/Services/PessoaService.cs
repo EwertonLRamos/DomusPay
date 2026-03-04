@@ -8,29 +8,30 @@ namespace DomusPay.Application.Services;
 
 public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
 {
-    public async Task<ListagemPessoaDTO> GetAllAsync()
+    public async Task<ListagemComValoresTotaisDTO<PessoaDTO>> GetAllAsync()
     {
         var pessoas = await pessoaRepository.GetAllAsync();
-        var pessoasComValoresTotais = pessoas.Select(p => new PessoaComValoresTotaisDTO()
+        var pessoasComValoresTotais = pessoas.Select(p => new ItemListagemComValoresTotaisDTO<PessoaDTO>()
         {
-            Id = p.Id,
-            Nome = p.Nome,
-            Idade = p.Idade,
+            Item = new PessoaDTO()
+            {
+                Id = p.Id,
+                Nome = p.Nome,
+                Idade = p.Idade
+            },
             TotalReceitas = CalcularValorTotal(p.Transacoes, TipoTransacao.Receita),
             TotalDespesas = CalcularValorTotal(p.Transacoes, TipoTransacao.Despesa),
             Saldo = CalcularValorTotal(p.Transacoes, TipoTransacao.Receita) - 
                     CalcularValorTotal(p.Transacoes, TipoTransacao.Despesa)
         });
 
-        var listagem = new ListagemPessoaDTO()
+        return new ListagemComValoresTotaisDTO<PessoaDTO>()
         {
-            Pessoas = [.. pessoasComValoresTotais],
+            Itens = [.. pessoasComValoresTotais],
             TotalReceitas = pessoasComValoresTotais.Sum(p => p.TotalReceitas),
             TotalDespesas = pessoasComValoresTotais.Sum(p => p.TotalDespesas),
             SaldoTotal = pessoasComValoresTotais.Sum(p => p.Saldo)
         };
-
-        return listagem;
     }
 
     private static decimal CalcularValorTotal(IEnumerable<Transacao> transacoes, TipoTransacao tipoTransacao)

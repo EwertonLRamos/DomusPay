@@ -16,11 +16,11 @@ namespace DomusPay.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<ListagemPessoaDTO>> GetAll()
+        public async Task<ActionResult<ListagemComValoresTotaisDTO<ItemListagemComValoresTotaisDTO<PessoaDTO>>>> GetAll()
         {
             var pessoas = await _pessoaService.GetAllAsync();
 
-            if (pessoas is null || pessoas.Pessoas.Count == 0)
+            if (pessoas is null || pessoas.Itens.Count == 0)
                 return NotFound();
 
             return Ok(pessoas);
