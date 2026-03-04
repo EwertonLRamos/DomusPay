@@ -21,6 +21,9 @@ public class CategoriaRepository(DomusPayDbContext context) : ICategoriaReposito
 
     public async Task<IEnumerable<Categoria>> GetAllAsync()
     {
-        return await _context.Categorias.ToAsyncEnumerable().ToListAsync();
+        return await _context.Categorias
+            .Include(c => c.Transacoes)
+            .ToAsyncEnumerable()
+            .ToListAsync();
     }
 }

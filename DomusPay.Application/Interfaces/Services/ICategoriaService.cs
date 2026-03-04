@@ -4,6 +4,6 @@ namespace DomusPay.Application.Interfaces.Services;
 
 public interface ICategoriaService
 {
-    Task<ListagemComValoresTotaisDTO<CategoriaDTO>> GetAllAsync();
-    Task CreateAsync(CategoriaDTO categoriaDTO);
+    Task<ListagemComValoresTotaisDTO<ItemListagemCategoriaDTO>> GetAllAsync();
+    Task CreateAsync(CadastroCategoriaDTO cadastroCategoria);
 }

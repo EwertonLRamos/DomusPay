@@ -1,7 +1,6 @@
 using DomusPay.Application.DTOs;
 using DomusPay.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 
 namespace DomusPay.Api.Controllers
 {
@@ -15,7 +14,7 @@ namespace DomusPay.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<ListagemComValoresTotaisDTO<CategoriaDTO>>> GetAll()
+        public async Task<ActionResult<ListagemComValoresTotaisDTO<ItemListagemCategoriaDTO>>> GetAll()
         {
             var categorias = await _categoriaService.GetAllAsync();
 
@@ -28,9 +27,9 @@ namespace DomusPay.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> Create(CategoriaDTO categoriaDTO)
+        public async Task<IActionResult> Create(CadastroCategoriaDTO cadastroCategoria)
         {
-            await _categoriaService.CreateAsync(categoriaDTO);
+            await _categoriaService.CreateAsync(cadastroCategoria);
             return Created();
         }
     }

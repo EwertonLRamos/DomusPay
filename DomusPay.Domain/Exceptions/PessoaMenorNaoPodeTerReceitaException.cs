@@ -1,5 +1,3 @@
-using System;
-
 namespace DomusPay.Domain.Exceptions;
 
 public class PessoaMenorNaoPodeTerReceitaException()

@@ -12,29 +12,26 @@ public class CategoriaService(ICategoriaRepository categoriaRepository) : ICateg
 {
     private readonly ICategoriaRepository _categoriaRepository = categoriaRepository;
 
-    public async Task<ListagemComValoresTotaisDTO<CategoriaDTO>> GetAllAsync()
+    public async Task<ListagemComValoresTotaisDTO<ItemListagemCategoriaDTO>> GetAllAsync()
     {
         var categorias = await _categoriaRepository.GetAllAsync();
         var categoriasComValoresTotais = categorias.Select(c => 
         {
-            var totalReceitas = c.Transacoes.CalcularValorTotal(TipoTransacao.Receita);
-            var totalDespesas = c.Transacoes.CalcularValorTotal(TipoTransacao.Despesa);
+            var totalReceitas = c.Transacoes is null ? 0 : c.Transacoes.CalcularValorTotal(TipoTransacao.Receita);
+            var totalDespesas = c.Transacoes is null ? 0 : c.Transacoes.CalcularValorTotal(TipoTransacao.Despesa);
 
-            return new ItemListagemComValoresTotaisDTO<CategoriaDTO>()
+            return new ItemListagemCategoriaDTO()
             {
-                Item = new CategoriaDTO()
-                {
-                    Id = c.Id,
-                    Descricao = c.Descricao,
-                    Finalidade = c.Finalidade.ToString()
-                },
+                Id = c.Id,
+                Descricao = c.Descricao,
+                Finalidade = c.Finalidade.ToString(),
                 TotalReceitas = totalReceitas,
                 TotalDespesas = totalDespesas,
                 Saldo = totalReceitas - totalDespesas
             };
         });
 
-        return new ListagemComValoresTotaisDTO<CategoriaDTO>()
+        return new ListagemComValoresTotaisDTO<ItemListagemCategoriaDTO>()
         {
             Itens = [.. categoriasComValoresTotais],
             TotalReceitas = categoriasComValoresTotais.Sum(c => c.TotalReceitas),
@@ -43,14 +40,14 @@ public class CategoriaService(ICategoriaRepository categoriaRepository) : ICateg
         };
     }
 
-    public async Task CreateAsync(CategoriaDTO categoriaDTO)
+    public async Task CreateAsync(CadastroCategoriaDTO cadastroCategoria)
     {
-        if(!Enum.TryParse<FinalidadeCategoria>(categoriaDTO.Finalidade, out var finalidade))
-            throw new FinalidadeCategoriaInvalidaException(categoriaDTO.Finalidade);
+        if(!Enum.TryParse<FinalidadeCategoria>(cadastroCategoria.Finalidade, out var finalidade))
+            throw new FinalidadeCategoriaInvalidaException(cadastroCategoria.Finalidade);
 
         await _categoriaRepository.CreateAsync(new Categoria()
         {
-            Descricao = categoriaDTO.Descricao,
+            Descricao = cadastroCategoria.Descricao,
             Finalidade = finalidade
         });
     }

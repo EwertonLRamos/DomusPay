@@ -1,5 +1,3 @@
-using System;
-
 namespace DomusPay.Application.DTOs;
 
 public class ItemListagemTransacaoDTO

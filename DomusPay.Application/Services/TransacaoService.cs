@@ -44,17 +44,20 @@ public class TransacaoService(
         });
     }
 
-    public async Task<IEnumerable<ItemListagemTransacaoDTO>> GetAllAsync()
+    public async Task<ListagemBaseDTO<ItemListagemTransacaoDTO>> GetAllAsync()
     {
         var transacoes = await _transacaoRepository.GetAllAsync();
 
-        return transacoes.Select(t => new ItemListagemTransacaoDTO()
+        return new ListagemBaseDTO<ItemListagemTransacaoDTO>()
         {
-            Descricao = t.Descricao,
-            Valor = t.Valor,
-            Tipo = t.Tipo.ToString(),
-            NomePessoa = t.Pessoa.Nome,
-            FinalidadeCategoria = t.Categoria.Finalidade.ToString()
-        });
+            Itens = [.. transacoes.Select(t => new ItemListagemTransacaoDTO()
+            {
+                Descricao = t.Descricao,
+                Valor = t.Valor,
+                Tipo = t.Tipo.ToString(),
+                NomePessoa = t.Pessoa.Nome,
+                FinalidadeCategoria = t.Categoria.Descricao
+            })]
+        };
     }
 }

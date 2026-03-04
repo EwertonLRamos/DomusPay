@@ -14,11 +14,11 @@ namespace DomusPay.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<IEnumerable<CadastroTransacaoDTO>>> GetAll()
+        public async Task<ActionResult<ListagemBaseDTO<CadastroTransacaoDTO>>> GetAll()
         {
             var transacoes = await _transacaoService.GetAllAsync();
 
-            if (transacoes is null || !transacoes.Any())
+            if (transacoes is null || transacoes.Itens.Count == 0)
                 return NotFound();
 
             return Ok(transacoes);

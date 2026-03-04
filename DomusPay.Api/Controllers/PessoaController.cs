@@ -16,7 +16,7 @@ namespace DomusPay.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<ListagemComValoresTotaisDTO<PessoaDTO>>> GetAll()
+        public async Task<ActionResult<ListagemComValoresTotaisDTO<ItemListagemPessoaDTO>>> GetAll()
         {
             var pessoas = await _pessoaService.GetAllAsync();
 
@@ -43,10 +43,10 @@ namespace DomusPay.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> Create(PessoaDTO pessoaDTO)
+        public async Task<IActionResult> Create(CadastroPessoaDTO cadastroPessoa)
         {
-            await _pessoaService.CreateAsync(pessoaDTO);
-            return CreatedAtAction(nameof(GetById), new { id = pessoaDTO.Id }, pessoaDTO);
+            await _pessoaService.CreateAsync(cadastroPessoa);
+            return Created();
         }
 
         [HttpPut("{id:guid}")]

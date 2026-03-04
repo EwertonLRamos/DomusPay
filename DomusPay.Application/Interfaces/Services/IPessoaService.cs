@@ -4,9 +4,9 @@ namespace DomusPay.Application.Interfaces.Services;
 
 public interface IPessoaService
 {
-    Task<ListagemComValoresTotaisDTO<PessoaDTO>> GetAllAsync();
+    Task<ListagemComValoresTotaisDTO<ItemListagemPessoaDTO>> GetAllAsync();
     Task<PessoaDTO> GetByIdAsync(Guid id);
-    Task CreateAsync(PessoaDTO pessoaDTO);
+    Task CreateAsync(CadastroPessoaDTO cadastroPessoa);
     Task UpdateAsync(Guid id, PessoaDTO pessoaDTO);
     Task DeleteAsync(Guid id);
 }
