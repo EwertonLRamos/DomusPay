@@ -4,6 +4,7 @@ using DomusPay.Application.Interfaces.Repositories;
 using DomusPay.Application.Interfaces.Services;
 using DomusPay.Domain.Entities;
 using DomusPay.Domain.Enums;
+using DomusPay.Domain.Exceptions;
 
 namespace DomusPay.Application.Services;
 
@@ -43,7 +44,7 @@ public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
     public async Task<PessoaDTO> GetByIdAsync(Guid id)
     {
         var pessoa = await pessoaRepository.GetByIdAsync(id, includeTransacoes: true) ?? 
-            throw new FileNotFoundException("Pessoa não encontrada.");
+            throw new PessoaNaoEncontradaOuNaoExisteException(id);
         
         return new PessoaDTO() 
         { 
@@ -67,7 +68,8 @@ public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
         if(id != pessoaDTO.Id)
             throw new ArgumentException("O ID fornecido não corresponde ao ID da pessoa a ser atualizada.");
 
-        var pessoa = await pessoaRepository.GetByIdAsync(id) ?? throw new FileNotFoundException("Pessoa não encontrada.");
+        var pessoa = await pessoaRepository.GetByIdAsync(id) ?? 
+            throw new PessoaNaoEncontradaOuNaoExisteException(id);
 
         pessoa.Nome = pessoaDTO.Nome;
         pessoa.Idade = pessoaDTO.Idade;
@@ -77,6 +79,9 @@ public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
 
     public async Task DeleteAsync(Guid id)
     {
-        await pessoaRepository.DeleteAsync(id);
+        var pessoa = await pessoaRepository.GetByIdAsync(id) ?? 
+            throw new PessoaNaoEncontradaOuNaoExisteException(id);
+
+        await pessoaRepository.DeleteAsync(pessoa);
     }
 }

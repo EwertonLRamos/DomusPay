@@ -8,5 +8,5 @@ public interface IPessoaRepository
     Task<Pessoa> GetByIdAsync(Guid id, bool includeTransacoes = false);
     Task CreateAsync(Pessoa pessoa);
     Task UpdateAsync(Pessoa pessoa);
-    Task DeleteAsync(Guid id);
+    Task DeleteAsync(Pessoa pessoa);
 }

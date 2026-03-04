@@ -4,6 +4,7 @@ using DomusPay.Application.Interfaces.Repositories;
 using DomusPay.Application.Interfaces.Services;
 using DomusPay.Domain.Entities;
 using DomusPay.Domain.Enums;
+using DomusPay.Domain.Exceptions;
 
 namespace DomusPay.Application.Services;
 
@@ -44,10 +45,13 @@ public class CategoriaService(ICategoriaRepository categoriaRepository) : ICateg
 
     public async Task CreateAsync(CategoriaDTO categoriaDTO)
     {
+        if(!Enum.TryParse<FinalidadeCategoria>(categoriaDTO.Finalidade, out var finalidade))
+            throw new FinalidadeCategoriaInvalidaException(categoriaDTO.Finalidade);
+
         await _categoriaRepository.CreateAsync(new Categoria()
         {
             Descricao = categoriaDTO.Descricao,
-            Finalidade = Enum.Parse<FinalidadeCategoria>(categoriaDTO.Finalidade)
+            Finalidade = finalidade
         });
     }
 }

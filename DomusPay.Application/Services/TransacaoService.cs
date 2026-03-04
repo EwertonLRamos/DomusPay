@@ -3,6 +3,7 @@ using DomusPay.Application.Interfaces.Repositories;
 using DomusPay.Application.Interfaces.Services;
 using DomusPay.Domain.Entities;
 using DomusPay.Domain.Enums;
+using DomusPay.Domain.Exceptions;
 
 namespace DomusPay.Application.Services;
 
@@ -18,16 +19,20 @@ public class TransacaoService(
 
     public async Task CreateAsync(CadastroTransacaoDTO transacaoDTO)
     {
-        var pessoa = await _pessoaRepository.GetByIdAsync(transacaoDTO.PessoaId);
-        var categoria = await _categoriaRepository.GetByIdAsync(transacaoDTO.CategoriaId);
+        var pessoa = await _pessoaRepository.GetByIdAsync(transacaoDTO.PessoaId) ?? 
+            throw new PessoaNaoEncontradaOuNaoExisteException(transacaoDTO.PessoaId);
+        
+        var categoria = await _categoriaRepository.GetByIdAsync(transacaoDTO.CategoriaId) ?? 
+            throw new CategoriaNaoEncontradaOuNaoExisteException(transacaoDTO.CategoriaId);
 
-        var tipoTransacao = Enum.Parse<TipoTransacao>(transacaoDTO.Tipo);
+        if(!Enum.TryParse<TipoTransacao>(transacaoDTO.Tipo, out var tipoTransacao))
+            throw new TipoTransferenciaInvalidoException(transacaoDTO.Tipo);
 
         if(categoria.Finalidade != FinalidadeCategoria.Ambas && categoria.Finalidade.ToString() != tipoTransacao.ToString())
-            throw new InvalidOperationException("A categoria selecionada não é compatível com a finalidade da transação.");
+            throw new CategoriaIncompativelComFinalidadeException();
 
         if(pessoa.Idade < 18 && tipoTransacao == TipoTransacao.Receita)
-            throw new InvalidOperationException("Pessoas menores de 18 anos não podem registrar receitas.");
+            throw new PessoaMenorNaoPodeTerReceitaException();
 
         await _transacaoRepository.CreateAsync(new Transacao()
         {   

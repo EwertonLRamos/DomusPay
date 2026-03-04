@@ -41,10 +41,8 @@ public class PessoaRepository(DomusPayDbContext context) : IPessoaRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Pessoa pessoa)
     {
-        var pessoa = await _context.Pessoas.FirstOrDefaultAsync(p => p.Id == id) ?? throw new FileNotFoundException("Pessoa não encontrada.");
-
         _context.Pessoas.Remove(pessoa);
         await _context.SaveChangesAsync();
     }
