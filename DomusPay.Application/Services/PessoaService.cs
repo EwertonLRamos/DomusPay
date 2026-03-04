@@ -8,7 +8,7 @@ namespace DomusPay.Application.Services;
 
 public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
 {
-    public async Task<IEnumerable<PessoaComValoresTotaisDTO>> GetAllAsync()
+    public async Task<ListagemPessoaDTO> GetAllAsync()
     {
         var pessoas = await pessoaRepository.GetAllAsync();
         var pessoasComValoresTotais = pessoas.Select(p => new PessoaComValoresTotaisDTO()
@@ -22,7 +22,15 @@ public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
                     CalcularValorTotal(p.Transacoes, TipoTransacao.Despesa)
         });
 
-        return pessoasComValoresTotais;
+        var listagem = new ListagemPessoaDTO()
+        {
+            Pessoas = [.. pessoasComValoresTotais],
+            TotalReceitas = pessoasComValoresTotais.Sum(p => p.TotalReceitas),
+            TotalDespesas = pessoasComValoresTotais.Sum(p => p.TotalDespesas),
+            SaldoTotal = pessoasComValoresTotais.Sum(p => p.Saldo)
+        };
+
+        return listagem;
     }
 
     private static decimal CalcularValorTotal(IEnumerable<Transacao> transacoes, TipoTransacao tipoTransacao)
