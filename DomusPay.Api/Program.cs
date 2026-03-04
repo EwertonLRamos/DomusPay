@@ -1,3 +1,4 @@
+using DomusPay.Api.Middlewares;
 using DomusPay.Application.Interfaces.Repositories;
 using DomusPay.Application.Interfaces.Services;
 using DomusPay.Application.Services;
@@ -26,6 +27,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
