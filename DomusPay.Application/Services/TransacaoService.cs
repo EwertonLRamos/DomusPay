@@ -26,7 +26,7 @@ public class TransacaoService(
         if(categoria.Finalidade != FinalidadeCategoria.Ambas && categoria.Finalidade.ToString() != tipoTransacao.ToString())
             throw new InvalidOperationException("A categoria selecionada não é compatível com a finalidade da transação.");
 
-        if(pessoa.Idade < 18 && categoria.Finalidade == FinalidadeCategoria.Receita)
+        if(pessoa.Idade < 18 && tipoTransacao == TipoTransacao.Receita)
             throw new InvalidOperationException("Pessoas menores de 18 anos não podem registrar receitas.");
 
         await _transacaoRepository.CreateAsync(new Transacao()
