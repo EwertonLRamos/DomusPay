@@ -16,19 +16,19 @@ public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
             Id = p.Id,
             Nome = p.Nome,
             Idade = p.Idade,
-            TotalReceitas = CalcularValorTotal(p.Transacoes, FinalidadeCategoria.Receita),
-            TotalDespesas = CalcularValorTotal(p.Transacoes, FinalidadeCategoria.Despesa),
-            Saldo = CalcularValorTotal(p.Transacoes, FinalidadeCategoria.Receita) - 
-                    CalcularValorTotal(p.Transacoes, FinalidadeCategoria.Despesa)
+            TotalReceitas = CalcularValorTotal(p.Transacoes, TipoTransacao.Receita),
+            TotalDespesas = CalcularValorTotal(p.Transacoes, TipoTransacao.Despesa),
+            Saldo = CalcularValorTotal(p.Transacoes, TipoTransacao.Receita) - 
+                    CalcularValorTotal(p.Transacoes, TipoTransacao.Despesa)
         });
 
         return pessoasComValoresTotais;
     }
 
-    private static decimal CalcularValorTotal(IEnumerable<Transacao> transacoes, FinalidadeCategoria finalidade)
+    private static decimal CalcularValorTotal(IEnumerable<Transacao> transacoes, TipoTransacao tipoTransacao)
     {
         return transacoes
-            .Where(t => t.Categoria?.Finalidade == finalidade)
+            .Where(t => t.Tipo == tipoTransacao)
             .Sum(t => t.Valor > 0 ? t.Valor : 0);
     }
 
