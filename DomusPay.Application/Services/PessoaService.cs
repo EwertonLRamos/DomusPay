@@ -1,4 +1,5 @@
 using DomusPay.Application.DTOs;
+using DomusPay.Application.Extensions;
 using DomusPay.Application.Interfaces.Repositories;
 using DomusPay.Application.Interfaces.Services;
 using DomusPay.Domain.Entities;
@@ -11,18 +12,23 @@ public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
     public async Task<ListagemComValoresTotaisDTO<PessoaDTO>> GetAllAsync()
     {
         var pessoas = await pessoaRepository.GetAllAsync();
-        var pessoasComValoresTotais = pessoas.Select(p => new ItemListagemComValoresTotaisDTO<PessoaDTO>()
+        var pessoasComValoresTotais = pessoas.Select(p => 
         {
-            Item = new PessoaDTO()
+            var totalReceitas = p.Transacoes.CalcularValorTotal(TipoTransacao.Receita);
+            var totalDespesas = p.Transacoes.CalcularValorTotal(TipoTransacao.Despesa);
+
+            return new ItemListagemComValoresTotaisDTO<PessoaDTO>()
             {
-                Id = p.Id,
-                Nome = p.Nome,
-                Idade = p.Idade
-            },
-            TotalReceitas = CalcularValorTotal(p.Transacoes, TipoTransacao.Receita),
-            TotalDespesas = CalcularValorTotal(p.Transacoes, TipoTransacao.Despesa),
-            Saldo = CalcularValorTotal(p.Transacoes, TipoTransacao.Receita) - 
-                    CalcularValorTotal(p.Transacoes, TipoTransacao.Despesa)
+                Item = new PessoaDTO()
+                {
+                    Id = p.Id,
+                    Nome = p.Nome,
+                    Idade = p.Idade
+                },
+                TotalReceitas = totalReceitas,
+                TotalDespesas = totalDespesas,
+                Saldo = totalReceitas - totalDespesas
+            };
         });
 
         return new ListagemComValoresTotaisDTO<PessoaDTO>()
@@ -32,13 +38,6 @@ public class PessoaService(IPessoaRepository pessoaRepository) : IPessoaService
             TotalDespesas = pessoasComValoresTotais.Sum(p => p.TotalDespesas),
             SaldoTotal = pessoasComValoresTotais.Sum(p => p.Saldo)
         };
-    }
-
-    private static decimal CalcularValorTotal(IEnumerable<Transacao> transacoes, TipoTransacao tipoTransacao)
-    {
-        return transacoes
-            .Where(t => t.Tipo == tipoTransacao)
-            .Sum(t => t.Valor > 0 ? t.Valor : 0);
     }
 
     public async Task<PessoaDTO> GetByIdAsync(Guid id)
