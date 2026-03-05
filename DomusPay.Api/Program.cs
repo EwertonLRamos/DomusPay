@@ -1,3 +1,4 @@
+using DomusPay.Api.Filters;
 using DomusPay.Api.Middlewares;
 using DomusPay.Application.Interfaces.Repositories;
 using DomusPay.Application.Interfaces.Services;
@@ -9,10 +10,6 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-
-builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IPessoaService, PessoaService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
@@ -29,6 +26,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<CadastroPessoaDTOValidator>
 builder.Services.AddValidatorsFromAssemblyContaining<CadastroCategoriaDTOValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CadastroTransacaoDTOValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<PessoaDTOValidator>();
+
+builder.Services.AddOpenApi();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
