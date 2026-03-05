@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using DomusPay.Domain.Exceptions;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DomusPay.Api.Middlewares;
@@ -25,6 +26,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
     {
         var statusCode = HttpStatusCode.InternalServerError;
         var title = "Ocorreu um erro inesperado no servidor.";
+        var exceptionMessage = exception.Message;
 
         switch (exception)
         {
@@ -44,13 +46,20 @@ public class ExceptionHandlingMiddleware(RequestDelegate next)
                 statusCode = HttpStatusCode.NotFound;
                 title = "Informação não encontrada.";
                 break;
+            case ValidationException validationException:
+                statusCode = HttpStatusCode.BadRequest;
+                title = "Erro de validação nos dados enviados.";
+
+                var erros = validationException.Errors.Select(e => e.ErrorMessage);
+                exceptionMessage = string.Join("; ", erros); 
+                break;
         }
 
         var problemDetails = new ProblemDetails
         {
             Status = (int)statusCode,
             Title = title,
-            Detail = exception.Message,
+            Detail = exceptionMessage,
             Instance = context.Request.Path
         };
 

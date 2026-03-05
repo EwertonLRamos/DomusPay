@@ -12,10 +12,15 @@
     <Folder Include="Interfaces/Repositories/" />
     <Folder Include="Interfaces/Services/" />
     <Folder Include="Services/" />
+    <Folder Include="Validators/" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../DomusPay.Domain/DomusPay.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="8.3.0" />
   </ItemGroup>
 
 </Project>

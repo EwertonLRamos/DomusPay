@@ -2,8 +2,10 @@ using DomusPay.Api.Middlewares;
 using DomusPay.Application.Interfaces.Repositories;
 using DomusPay.Application.Interfaces.Services;
 using DomusPay.Application.Services;
+using DomusPay.Application.Validators;
 using DomusPay.Infrastructure;
 using DomusPay.Infrastructure.Repositories;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,11 @@ builder.Services.AddScoped<ITransacaoRepository, TransacaoRepository>();
 builder.Services.AddDbContext<DomusPayDbContext>(
     options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddValidatorsFromAssemblyContaining<CadastroPessoaDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CadastroCategoriaDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CadastroTransacaoDTOValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<PessoaDTOValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
