@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DomusPay.Api.Filters;
 
+/// <summary>
+/// Filtro de ação que intercepta as requisições e realiza a validação dos dados de entrada utilizando os validadores do FluentValidation.
+/// Caso a validação falhe, retorna uma resposta HTTP 400 Bad Request com os detalhes dos erros de validação.
+/// Caso a validação seja bem-sucedida, permite que a requisição prossiga normalmente para o próximo filtro ou para a ação do controlador.
+/// </summary>
 public class ValidationFilter : IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

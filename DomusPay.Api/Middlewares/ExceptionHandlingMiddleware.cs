@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DomusPay.Api.Middlewares;
 
+/// <summary>
+/// Middleware de tratamento global de exceções que intercepta as exceções lançadas durante o processamento das requisições e retorna respostas HTTP apropriadas com detalhes sobre o erro ocorrido.
+/// </summary>
+/// <param name="next"></param>
 public class ExceptionHandlingMiddleware(RequestDelegate next)
 {
     private readonly RequestDelegate _next = next;
