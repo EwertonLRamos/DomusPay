@@ -1,105 +1,24 @@
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Ww][Ii][Nn]32/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+# Pastas de Build e Release
+bin/
+obj/
 
-# Visual Studio cache/options directory
+# Arquivos de configurações de usuário do Visual Studio / Rider
 .vs/
-
-# Visual Studio Code
 .vscode/
-*.code-workspace
-
-# JetBrains
-.idea/
-.ideaIgnore/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Visual Studio user-specific files
-*.rsuser
-*.suo
 *.user
-*.userosscache
-*.sln.docstates
-
-# Rider
+*.userprefs
+*.suo
 .idea/
-*.sln.iml
 
-# Local database files
+# Arquivos de Banco de Dados SQLite (MUITO IMPORTANTE)
 *.db
-*.sqlite
-*.sqlite3
-*.mdf
-*.ldf
-*.ndf
+*.db-shm
+*.db-wal
 
-# NuGet
-*.nupkg
-*.snupkg
-.nuget/
+# Arquivos de log e cache
+*.log
+[Dd]ebug/
+[Rr]elease/
 
-# Rider
-.idea/
-*.sln.iml
-
-# User-specific files
-appsettings.Development.json
-appsettings.Local.json
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Node modules (if using npm/yarn)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# OS files
+# Mac OS
 .DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.backup
-*~
-
-# IDE specific
-.editorconfig.user
-.vscode/settings.json
-.vscode/launch.json
-.vscode/extensions.json
-.vscode/*.code-snippets
-
-# Build logs
-msbuild.log
-msbuild.err
-msbuild.wrn
-
-# ReSharper
-_ReSharper*/
-*.DotSettings.user
-
-# Test results
-TestResults/
-*.trx
-*.coverage
