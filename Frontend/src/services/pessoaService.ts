@@ -1,9 +1,9 @@
 import api from './api';
-import type { Pessoa, ListagemComValoresTotais } from '../types';
+import type { Pessoa, ItemListagemPessoa, ListagemComValoresTotais } from '../types';
 
 export const pessoaService = {
     listarTodas: async () => {
-        const response = await api.get<ListagemComValoresTotais<Pessoa>>('/Pessoa');
+        const response = await api.get<ListagemComValoresTotais<ItemListagemPessoa>>('/Pessoa');
         return response.data;
     },
 

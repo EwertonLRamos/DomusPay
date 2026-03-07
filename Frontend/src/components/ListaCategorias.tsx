@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { pessoaService } from '../services/pessoaService';
-import type { ItemListagemPessoa, ListagemComValoresTotais } from '../types';
+import { categoriaService } from '../services/categoriaService';
+import type { ItemListagemCategoria, ListagemComValoresTotais } from '../types';
 
-export const ListaPessoas: React.FC = () => {
-    const [dados, setDados] = useState<ListagemComValoresTotais<ItemListagemPessoa> | null>(null);
+export const ListaCategorias: React.FC = () => {
+    const [dados, setDados] = useState<ListagemComValoresTotais<ItemListagemCategoria> | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        carregarPessoas();
+        carregarCategorias();
     }, []);
 
-    const carregarPessoas = async () => {
+    const carregarCategorias = async () => {
         try {
             setLoading(true);
-            const resultado = await pessoaService.listarTodas();
+            const resultado = await categoriaService.listarTodas();
             setDados(resultado);
         } catch (error) {
-            alert('Não foi possível carregar a lista de pessoas.');
+            alert('Não foi possível carregar a lista de categorias.');
         } finally {
             setLoading(false);
         }
@@ -33,15 +33,15 @@ export const ListaPessoas: React.FC = () => {
     return (
         <div className="card-modulo">
             <div className="cabecalho-modulo">
-                <h2>Controle de Pessoas</h2>
-                <button className="btn-sucesso">➕ Cadastrar Pessoa</button>
+                <h2>Controle de Categorias</h2>
+                <button className="btn-sucesso">Cadastrar Categoria</button>
             </div>
 
             <table className="tabela-dados">
                 <thead>
                     <tr>
-                        <th>Nome</th>
-                        <th>Idade</th>
+                        <th>Descrição</th>
+                        <th>Finalidade</th>
                         <th>Receitas</th>
                         <th>Despesas</th>
                         <th>Saldo</th>
@@ -49,10 +49,10 @@ export const ListaPessoas: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {dados.itens.map(({ id, nome, idade, totalReceitas, totalDespesas, saldo }) => (
+                    {dados.itens.map(({ id, descricao, finalidade, totalReceitas, totalDespesas, saldo }) => (
                         <tr key={id}>
-                            <td><strong>{nome}</strong></td>
-                            <td>{idade} anos</td>
+                            <td><strong>{descricao}</strong></td>
+                            <td>{finalidade === 1 ? 'Despesa' : finalidade === 2 ? 'Receita' : 'Ambas'}</td>
                             <td className="texto-verde">{formatarMoeda(totalReceitas)}</td>
                             <td className="texto-vermelho">{formatarMoeda(totalDespesas)}</td>
                             <td className={saldo >= 0 ? "texto-verde" : "texto-vermelho"}>
@@ -66,12 +66,11 @@ export const ListaPessoas: React.FC = () => {
                         </tr>
                     ))}
                     {dados.itens.length === 0 && (
-                        <tr><td colSpan={6} style={{ textAlign: 'center' }}>Nenhuma pessoa cadastrada.</td></tr>
+                        <tr><td colSpan={6} style={{ textAlign: 'center' }}>Nenhuma categoria cadastrada.</td></tr>
                     )}
                 </tbody>
             </table>
 
-            {/* Rodapé de Totais Globais */}
             <div className="totais-globais">
                 <div className="card-total">
                     <span>Total Receitas</span>
