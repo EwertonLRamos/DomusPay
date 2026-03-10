@@ -1,4 +1,4 @@
-# DomusPay - Controlo de Gastos Residenciais
+# DomusPay - Seu controle financeiro residencial
 
 A palavra **DomusPay** nasce da junção de *Domus* (termo em latim que significa "casa" ou "lar") e *Pay* (do inglês, pagamento). A ideia central é fornecer um sistema completo para a gestão e controle de despesas e receitas residenciais, permitindo o acompanhamento claro do saldo líquido por pessoa e por categoria.
 
