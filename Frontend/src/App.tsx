@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { ListaPessoas } from './components/ListaPessoas';
 import { ListaCategorias } from './components/ListaCategorias';
 import { Transacoes } from './components/Transacoes';
+import logo from './assets/domuspay-logo.png';
 
 const App: React.FC = () => {
-  const [telaAtiva, setTelaAtiva] = useState<'pessoas' | 'categorias' | 'transacoes'>('pessoas');
+  const [telaAtiva, setTelaAtiva] = useState<'pessoas' | 'categorias' | 'transacoes'>('transacoes');
 
   return (
     <div className="layout-container">
       <nav className="navbar">
         <div className="logo">
-          <h2>DomusPay</h2>
+          <img src={logo} alt="DomusPay" className="logo-img" /> 
         </div>
         <div className="menu-botoes">
           <button 
