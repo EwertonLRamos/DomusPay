@@ -1,5 +1,5 @@
 export interface Pessoa {
-    id: number;
+    id: string;
     nome: string;
     idade: number;
 }
@@ -32,5 +32,5 @@ export interface ListagemComValoresTotais<T> {
     itens: T[];
     totalReceitas: number;
     totalDespesas: number;
-    saldo: number;
+    saldoTotal: number;
 }

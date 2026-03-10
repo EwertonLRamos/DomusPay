@@ -12,7 +12,12 @@ export const pessoaService = {
         return response.data;
     },
 
-    eliminar: async (id: number) => {
+    atualizar: async (id: string, dados: Pessoa) => {
+        const response = await api.put<Pessoa>(`/Pessoa/${id}`, dados);
+        return response.data;
+    },
+
+    eliminar: async (id: string) => {
         await api.delete(`/Pessoa/${id}`);
     }
 };
