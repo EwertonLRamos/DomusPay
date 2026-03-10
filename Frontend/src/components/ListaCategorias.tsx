@@ -80,7 +80,7 @@ export const ListaCategorias: React.FC = () => {
         <div className="card-modulo">
             <div className="cabecalho-modulo">
                 <h2>Controle de Categorias</h2>
-                <button className="btn-sucesso" onClick={abrirModalNovo}>Cadastrar Categoria</button>
+                <button className="btn-cadastro" onClick={abrirModalNovo}>Cadastrar Categoria</button>
             </div>
 
             <table className="tabela-dados">

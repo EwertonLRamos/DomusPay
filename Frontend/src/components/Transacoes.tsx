@@ -128,7 +128,7 @@ export const Transacoes: React.FC = () => {
         <div className="card-modulo">
             <div className="cabecalho-modulo">
                 <h2>Controle de Transações</h2>
-                <button className="btn-sucesso" onClick={abrirModalNovo}>Cadastrar Transação</button>
+                <button className="btn-cadastro" onClick={abrirModalNovo}>Cadastrar Transação</button>
             </div>
 
             <table className="tabela-dados">

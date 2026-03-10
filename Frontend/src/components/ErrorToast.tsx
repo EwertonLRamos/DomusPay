@@ -8,7 +8,7 @@ type ErrorToastProps = {
 
 export const ErrorToast: React.FC<ErrorToastProps> = ({ title, message, closeToast }) => {
     return (
-        <div>
+        <div className='toast-body'>
             <strong>{title}</strong>
             <p>{message}</p>
             <button onClick={closeToast}>OK</button>
