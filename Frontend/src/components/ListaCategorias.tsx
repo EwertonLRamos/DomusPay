@@ -21,8 +21,6 @@ export const ListaCategorias: React.FC = () => {
             setLoading(true);
             const resultado = await categoriaService.listarTodas();
             setDados(resultado);
-        } catch (error) {
-            alert('Não foi possível carregar a lista de categorias.');
         } finally {
             setLoading(false);
         }
@@ -61,16 +59,12 @@ export const ListaCategorias: React.FC = () => {
         e.preventDefault();
         if (editDescricao.trim() === '') return;
         
-        try {
-            await categoriaService.criar({
-                descricao: editDescricao,
-                finalidade: editFinalidade
-            });
-            fecharModal();
-            carregarCategorias();
-        } catch (error) {
-            alert('Erro ao cadastrar a categoria.');
-        }
+        await categoriaService.criar({
+            descricao: editDescricao,
+            finalidade: editFinalidade
+        });
+        fecharModal();
+        carregarCategorias();
     };
 
     if (loading) return <div className="loading">A carregar os dados...</div>;

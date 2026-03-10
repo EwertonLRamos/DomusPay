@@ -21,8 +21,6 @@ export const ListaPessoas: React.FC = () => {
             setLoading(true);
             const resultado = await pessoaService.listarTodas();
             setDados(resultado);
-        } catch (error) {
-            alert('Não foi possível carregar a lista de pessoas.');
         } finally {
             setLoading(false);
         }
@@ -56,46 +54,35 @@ export const ListaPessoas: React.FC = () => {
 
     const handleExcluir = async () => {
         if (!itemSelecionado) return;
-        try {
-            await pessoaService.eliminar(itemSelecionado.id);
-            fecharModal();
-            carregarPessoas(); 
-        } catch (error) {
-            alert('Erro ao excluir a pessoa. Verifique se existem transações pendentes.');
-        }
+
+        await pessoaService.eliminar(itemSelecionado.id);
+        fecharModal();
+        carregarPessoas(); 
     };
 
     const handleSalvarEdicao = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!itemSelecionado || editNome.trim() === '' || editIdade === '') return;
         
-        try {
-            await pessoaService.atualizar(itemSelecionado.id, {
-                id: itemSelecionado.id,
-                nome: editNome,
-                idade: Number(editIdade)
-            });
-            fecharModal();
-            carregarPessoas(); 
-        } catch (error) {
-            alert('Erro ao atualizar os dados.');
-        }
+        await pessoaService.atualizar(itemSelecionado.id, {
+            id: itemSelecionado.id,
+            nome: editNome,
+            idade: Number(editIdade)
+        });
+        fecharModal();
+        carregarPessoas(); 
     };
 
     const handleCadastrar = async (e: React.FormEvent) => {
         e.preventDefault();
         if (editNome.trim() === '' || editIdade === '') return;
         
-        try {
-            await pessoaService.criar({
-                nome: editNome,
-                idade: Number(editIdade)
-            });
-            fecharModal();
-            carregarPessoas();
-        } catch (error) {
-            alert('Erro ao cadastrar a pessoa.');
-        }
+        await pessoaService.criar({
+            nome: editNome,
+            idade: Number(editIdade)
+        });
+        fecharModal();
+        carregarPessoas();
     };
 
     if (loading) return <div className="loading">A carregar os dados...</div>;

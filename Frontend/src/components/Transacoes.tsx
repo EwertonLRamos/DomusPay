@@ -33,15 +33,11 @@ export const Transacoes: React.FC = () => {
     }, []);
 
     const carregarListasParaDropdown = async () => {
-        try {
-            const resPessoas = await pessoaService.listarTodas();
-            setPessoas(resPessoas.itens || []);
-            
-            const resCategorias = await categoriaService.listarTodas();
-            setCategorias(resCategorias.itens || []);
-        } catch (error) {
-            console.error("Erro ao carregar opções para o formulário", error);
-        }
+        const resPessoas = await pessoaService.listarTodas();
+        setPessoas(resPessoas.itens || []);
+        
+        const resCategorias = await categoriaService.listarTodas();
+        setCategorias(resCategorias.itens || []);
     };
     
     const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,9 +68,8 @@ export const Transacoes: React.FC = () => {
             setLoading(true);
             const resultado = await transacaoService.listarTodas();
             setDados(resultado);
-        } catch (error) {
-            alert('Não foi possível carregar a lista de transações.');
-        } finally {
+        } 
+        finally {
             setLoading(false);
         }
     };
@@ -106,19 +101,15 @@ export const Transacoes: React.FC = () => {
         e.preventDefault();
         if (editDescricao.trim() === '') return;
         
-        try {
-            await transacaoService.criar({
-                descricao: editDescricao,
-                tipo: editTipo,
-                pessoaId: editPessoaId,
-                categoriaId: editCategoriaId,
-                valor: obterValorNumerico(editValorDisplay)
-            });
-            fecharModal();
-            carregarCategorias();
-        } catch (error) {
-            alert('Erro ao cadastrar a transação.');
-        }
+        await transacaoService.criar({
+            descricao: editDescricao,
+            tipo: editTipo,
+            pessoaId: editPessoaId,
+            categoriaId: editCategoriaId,
+            valor: obterValorNumerico(editValorDisplay)
+        });
+        fecharModal();
+        carregarCategorias();
     };
 
     if (loading) return <div className="loading">A carregar os dados...</div>;
