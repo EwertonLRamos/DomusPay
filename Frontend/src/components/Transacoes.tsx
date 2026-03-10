@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { transacaoService } from '../services/transacaoService';
-import type { ItemListagemTransacao, ListagemBase } from '../types';
+import { pessoaService } from '../services/pessoaService';
+import { categoriaService } from '../services/categoriaService';
+import type { 
+    ItemListagemTransacao, 
+    ListagemBase, 
+    ItemListagemPessoa,
+    ItemListagemCategoria
+} from '../types';
 
 export const Transacoes: React.FC = () => {
     const [dados, setDados] = useState<ListagemBase<ItemListagemTransacao> | null>(null);
@@ -9,12 +16,56 @@ export const Transacoes: React.FC = () => {
     const [modalAtivo, setModalAtivo] = useState<'nenhum' | 'cadastrar' | 'detalhes'>('nenhum');
     const [itemSelecionado, setItemSelecionado] = useState<ItemListagemTransacao | null>(null);
 
+    const [pessoas, setPessoas] = useState<ItemListagemPessoa[]>([]);
+    const [categorias, setCategorias] = useState<ItemListagemCategoria[]>([]);
+
+    const [editPessoaId, setEditPessoaId] = useState('');
+    const [editCategoriaId, setEditCategoriaId] = useState('');
+
+    const [editValorDisplay, setEditValorDisplay] = useState('');
+
     const [editDescricao, setEditDescricao] = useState('');
     const [editTipo, setEditTipo] = useState('Despesa'); 
 
     useEffect(() => {
         carregarCategorias();
+        carregarListasParaDropdown();
     }, []);
+
+    const carregarListasParaDropdown = async () => {
+        try {
+            const resPessoas = await pessoaService.listarTodas();
+            setPessoas(resPessoas.itens || []);
+            
+            const resCategorias = await categoriaService.listarTodas();
+            setCategorias(resCategorias.itens || []);
+        } catch (error) {
+            console.error("Erro ao carregar opções para o formulário", error);
+        }
+    };
+    
+    const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let valor = e.target.value.replace(/\D/g, ''); 
+        
+        if (!valor) {
+            setEditValorDisplay('');
+            return;
+        }
+
+        const numericValue = (parseInt(valor, 10) / 100).toFixed(2);
+        
+        const formatado = new Intl.NumberFormat('pt-BR', { 
+            style: 'currency', 
+            currency: 'BRL' 
+        }).format(parseFloat(numericValue));
+
+        setEditValorDisplay(formatado);
+    };
+
+    const obterValorNumerico = (valorFormatado: string): number => {
+        const apenasNumeros = valorFormatado.replace(/[^\d]/g, '');
+        return parseInt(apenasNumeros, 10) / 100;
+    };
 
     const carregarCategorias = async () => {
         try {
@@ -59,9 +110,9 @@ export const Transacoes: React.FC = () => {
             await transacaoService.criar({
                 descricao: editDescricao,
                 tipo: editTipo,
-                valor: 0, // Valor inicial, pode ser editado posteriormente
-                categoriaId: '', // Categoria pode ser associada posteriormente
-                pessoaId: '', // Pessoa pode ser associada posteriormente
+                pessoaId: editPessoaId,
+                categoriaId: editCategoriaId,
+                valor: obterValorNumerico(editValorDisplay)
             });
             fecharModal();
             carregarCategorias();
@@ -156,6 +207,46 @@ export const Transacoes: React.FC = () => {
                                             <option value="Receita">Receita</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Pessoa</label>
+                                    <select 
+                                        value={editPessoaId} 
+                                        onChange={(e) => setEditPessoaId(e.target.value)}
+                                        required
+                                    >
+                                        <option value="" disabled>Selecione uma pessoa...</option>
+                                        {pessoas.map((p) => (
+                                            <option key={p.id} value={p.id}>
+                                                {p.nome}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Categoria</label>
+                                    <select 
+                                        value={editCategoriaId} 
+                                        onChange={(e) => setEditCategoriaId(e.target.value)}
+                                        required
+                                    >
+                                        <option value="" disabled>Selecione uma categoria...</option>
+                                        {categorias.map((c) => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.descricao}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Valor</label>
+                                    <input 
+                                        type="text" 
+                                        value={editValorDisplay} 
+                                        onChange={handleValorChange} 
+                                        placeholder="R$ 0,00"
+                                        required 
+                                    />
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn-cancelar" onClick={fecharModal}>Cancelar</button>

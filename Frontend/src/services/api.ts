@@ -14,7 +14,7 @@ api.interceptors.response.use(
             const errorMessage = error.response.data.detail || 'Ocorreu um erro inesperado.';
             console.error('Erro na API:', errorMessage);
             
-            // toast.error(errorMessage);
+            //toast.error(errorMessage);
         }
         return Promise.reject(error);
     }
