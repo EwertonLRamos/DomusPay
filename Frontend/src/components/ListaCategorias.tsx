@@ -6,11 +6,11 @@ export const ListaCategorias: React.FC = () => {
     const [dados, setDados] = useState<ListagemComValoresTotais<ItemListagemCategoria> | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const [modalAtivo, setModalAtivo] = useState<'nenhum' | 'cadastrar' | 'detalhes' | 'editar' | 'excluir'>('nenhum');
+    const [modalAtivo, setModalAtivo] = useState<'nenhum' | 'cadastrar' | 'detalhes'>('nenhum');
     const [itemSelecionado, setItemSelecionado] = useState<ItemListagemCategoria | null>(null);
 
     const [editDescricao, setEditDescricao] = useState('');
-    const [editFinalidade, setEditFinalidade] = useState<number | ''>('');
+    const [editFinalidade, setEditFinalidade] = useState('Despesa'); 
 
     useEffect(() => {
         carregarCategorias();
@@ -28,6 +28,13 @@ export const ListaCategorias: React.FC = () => {
         }
     };
 
+    const obterFinalidadeTexto = (valor: number | string) => {
+        if (valor === 1 || valor === 'Despesa') return 'Despesa';
+        if (valor === 2 || valor === 'Receita') return 'Receita';
+        if (valor === 3 || valor === 'Ambas') return 'Ambas';
+        return 'Desconhecido';
+    };
+
     const formatarMoeda = (valor: number) => {
         if (isNaN(valor)) return 'R$ 0,00';
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
@@ -36,16 +43,12 @@ export const ListaCategorias: React.FC = () => {
     const abrirModalNovo = () => {
         setItemSelecionado(null);
         setEditDescricao('');
-        setEditFinalidade('');
+        setEditFinalidade('Despesa');
         setModalAtivo('cadastrar');
     };
 
-    const abrirModal = (tipo: 'detalhes' | 'editar' | 'excluir', item: ItemListagemCategoria) => {
+    const abrirModal = (tipo: 'detalhes', item: ItemListagemCategoria) => {
         setItemSelecionado(item);
-        if (tipo === 'editar') {
-            setEditDescricao(item.descricao);
-            setEditFinalidade(item.finalidade);
-        }
         setModalAtivo(tipo);
     };
 
@@ -56,12 +59,12 @@ export const ListaCategorias: React.FC = () => {
 
     const handleCadastrar = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (editDescricao.trim() === '' || editFinalidade === '') return;
+        if (editDescricao.trim() === '') return;
         
         try {
             await categoriaService.criar({
                 descricao: editDescricao,
-                finalidade: Number(editFinalidade)
+                finalidade: editFinalidade
             });
             fecharModal();
             carregarCategorias();
@@ -95,10 +98,22 @@ export const ListaCategorias: React.FC = () => {
                     {dados.itens.map((linha) => (
                         <tr key={linha.id}>
                             <td><strong>{linha.descricao}</strong></td>
-                            <td>{linha.finalidade}</td>
-                            <td className="texto-verde">{formatarMoeda(linha.totalReceitas)}</td>
-                            <td className="texto-vermelho">{formatarMoeda(linha.totalDespesas)}</td>
-                            <td className={linha.saldo >= 0 ? "texto-verde" : "texto-vermelho"}>
+                            <td>
+                                <span className={
+                                    linha.finalidade === "Despesa" ? "texto-vermelho" : 
+                                    linha.finalidade === "Receita" ? "texto-verde" : 
+                                    linha.finalidade === "Ambas" ? "texto-amarelo" : ""
+                                }>
+                                    {obterFinalidadeTexto(linha.finalidade)}
+                                </span>
+                            </td>
+                            <td className={linha.totalReceitas === 0 ? "" : "texto-verde"}>{formatarMoeda(linha.totalReceitas)}</td>
+                            <td className={linha.totalDespesas === 0 ? "" : "texto-vermelho"}>{formatarMoeda(linha.totalDespesas)}</td>
+                            <td className={
+                                linha.saldo > 0 ? "texto-verde" : 
+                                linha.saldo < 0 ? "texto-vermelho" : 
+                                linha.saldo == 0 ? "texto-azul" : 
+                                ""}>
                                 <strong>{formatarMoeda(linha.saldo)}</strong>
                             </td>
                             <td className="acoes">
@@ -107,7 +122,7 @@ export const ListaCategorias: React.FC = () => {
                         </tr>
                     ))}
                     {dados.itens.length === 0 && (
-                        <tr><td colSpan={6} style={{ textAlign: 'center', padding: '30px' }}>Nenhuma pessoa cadastrada.</td></tr>
+                        <tr><td colSpan={3} style={{ textAlign: 'center', padding: '30px' }}>Nenhuma categoria cadastrada.</td></tr>
                     )}
                 </tbody>
             </table>
@@ -123,7 +138,11 @@ export const ListaCategorias: React.FC = () => {
                 </div>
                 <div className="card-total destaque">
                     <span>Saldo Total</span>
-                    <h3 className={dados.saldoTotal >= 0 ? "texto-verde" : "texto-vermelho"}>
+                    <h3 className={
+                        dados.saldoTotal > 0 ? "texto-verde" : 
+                        dados.saldoTotal < 0 ? "texto-vermelho" : 
+                        dados.saldoTotal == 0 ? "texto-azul" : 
+                        ""}>
                         {formatarMoeda(dados.saldoTotal)}
                     </h3>
                 </div>
@@ -132,12 +151,12 @@ export const ListaCategorias: React.FC = () => {
             {modalAtivo !== 'nenhum' && (
                 <div className="modal-overlay" onClick={fecharModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        
+
                         {/* Cadastro */}
-                        {modalAtivo === 'cadastrar' && (
+                        {modalAtivo === 'cadastrar' && ( 
                             <form onSubmit={handleCadastrar}>
                                 <div className="modal-header">
-                                    <h2>Cadastrar Nova Categoria</h2>
+                                    <h2>Nova Categoria</h2>
                                     <button type="button" className="btn-fechar" onClick={fecharModal}>&times;</button>
                                 </div>
                                 <div className="modal-body">
@@ -147,25 +166,27 @@ export const ListaCategorias: React.FC = () => {
                                             type="text" 
                                             value={editDescricao} 
                                             onChange={(e) => setEditDescricao(e.target.value)} 
-                                            placeholder="Ex: Ana Silva"
+                                            placeholder="Ex: Supermercado"
                                             required 
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label>Finalidade</label>
-                                        <input 
-                                            type="number" 
-                                            min="0"
+                                        <select 
                                             value={editFinalidade} 
-                                            onChange={(e) => setEditFinalidade(e.target.value !== '' ? Number(e.target.value) : '')} 
-                                            placeholder="Ex: 25"
-                                            required 
-                                        />
+                                            onChange={(e) => setEditFinalidade(e.target.value)}
+                                            style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #d1d5db' }}
+                                            required
+                                        >
+                                            <option value="Despesa">Despesa</option>
+                                            <option value="Receita">Receita</option>
+                                            <option value="Ambas">Ambas</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn-cancelar" onClick={fecharModal}>Cancelar</button>
-                                    <button type="submit" className="btn-sucesso">Salvar</button>
+                                    <button type="submit" className="btn-salvar">Salvar</button>
                                 </div>
                             </form>
                         )}
@@ -183,7 +204,13 @@ export const ListaCategorias: React.FC = () => {
                                     <p><strong>Total de Despesas:</strong> <span className="texto-vermelho">{formatarMoeda(itemSelecionado.totalDespesas)}</span></p>
                                     <hr style={{ margin: '15px 0', border: '1px solid #eee' }} />
                                     <p style={{ fontSize: '18px' }}>
-                                        <strong>Saldo Atual:</strong> <span className={itemSelecionado.saldo >= 0 ? "texto-verde" : "texto-vermelho"}>{formatarMoeda(itemSelecionado.saldo)}</span>
+                                        <strong>Saldo Atual:</strong> <span className={
+                                            itemSelecionado.saldo > 0 ? "texto-verde" : 
+                                            itemSelecionado.saldo < 0 ? "texto-vermelho" : 
+                                            itemSelecionado.saldo == 0 ? "texto-azul" : 
+                                            ""} >
+                                            {formatarMoeda(itemSelecionado.saldo)}
+                                        </span>
                                     </p>
                                 </div>
                                 <div className="modal-footer">

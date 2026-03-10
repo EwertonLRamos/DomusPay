@@ -124,9 +124,13 @@ export const ListaPessoas: React.FC = () => {
                         <tr key={linha.id}>
                             <td><strong>{linha.nome}</strong></td>
                             <td>{linha.idade} anos</td>
-                            <td className="texto-verde">{formatarMoeda(linha.totalReceitas)}</td>
-                            <td className="texto-vermelho">{formatarMoeda(linha.totalDespesas)}</td>
-                            <td className={linha.saldo >= 0 ? "texto-verde" : "texto-vermelho"}>
+                            <td className={linha.totalReceitas === 0 ? "" : "texto-verde"}>{formatarMoeda(linha.totalReceitas)}</td>
+                            <td className={linha.totalDespesas === 0 ? "" : "texto-vermelho"}>{formatarMoeda(linha.totalDespesas)}</td>
+                            <td className={
+                                linha.saldo > 0 ? "texto-verde" : 
+                                linha.saldo < 0 ? "texto-vermelho" : 
+                                linha.saldo == 0 ? "texto-azul" : 
+                                ""}>
                                 <strong>{formatarMoeda(linha.saldo)}</strong>
                             </td>
                             <td className="acoes">
@@ -153,7 +157,11 @@ export const ListaPessoas: React.FC = () => {
                 </div>
                 <div className="card-total destaque">
                     <span>Saldo Total</span>
-                    <h3 className={dados.saldoTotal >= 0 ? "texto-verde" : "texto-vermelho"}>
+                    <h3 className={
+                        dados.saldoTotal > 0 ? "texto-verde" : 
+                        dados.saldoTotal < 0 ? "texto-vermelho" : 
+                        dados.saldoTotal == 0 ? "texto-azul" : 
+                        ""}>
                         {formatarMoeda(dados.saldoTotal)}
                     </h3>
                 </div>
@@ -213,7 +221,13 @@ export const ListaPessoas: React.FC = () => {
                                     <p><strong>Total de Despesas:</strong> <span className="texto-vermelho">{formatarMoeda(itemSelecionado.totalDespesas)}</span></p>
                                     <hr style={{ margin: '15px 0', border: '1px solid #eee' }} />
                                     <p style={{ fontSize: '18px' }}>
-                                        <strong>Saldo Atual:</strong> <span className={itemSelecionado.saldo >= 0 ? "texto-verde" : "texto-vermelho"}>{formatarMoeda(itemSelecionado.saldo)}</span>
+                                        <strong>Saldo Atual:</strong> <span className={
+                                            itemSelecionado.saldo > 0 ? "texto-verde" : 
+                                            itemSelecionado.saldo < 0 ? "texto-vermelho" : 
+                                            itemSelecionado.saldo == 0 ? "texto-azul" : 
+                                            ""} >
+                                            {formatarMoeda(itemSelecionado.saldo)}
+                                        </span>
                                     </p>
                                 </div>
                                 <div className="modal-footer">

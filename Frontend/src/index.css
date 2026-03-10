@@ -61,6 +61,8 @@ html, body, #root {
 
 .texto-verde { color: #10b981; }
 .texto-vermelho { color: #ef4444; }
+.texto-azul { color: #3b82f6; }
+.texto-amarelo { color: #f5de0b; }  
 
 /* Botões de Ação na Tabela */
 .acoes { display: flex; gap: 8px; justify-content: center; }

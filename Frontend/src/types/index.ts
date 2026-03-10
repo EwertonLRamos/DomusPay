@@ -7,7 +7,7 @@ export interface Pessoa {
 export interface Categoria {
     id: number;
     descricao: string;
-    finalidade: number; // 0 = Despesa, 1 = Receita, 2 = Ambas
+    finalidade: string; // "Despesa", "Receita" ou "Ambas"
 }
 
 export interface ItemListagemPessoa {
@@ -22,7 +22,7 @@ export interface ItemListagemPessoa {
 export interface ItemListagemCategoria {
     id: string;
     descricao: string;
-    finalidade: number;
+    finalidade: string;
     totalReceitas: number;
     totalDespesas: number;
     saldo: number;
