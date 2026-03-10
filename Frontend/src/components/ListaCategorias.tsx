@@ -96,7 +96,11 @@ export const ListaCategorias: React.FC = () => {
                 </thead>
                 <tbody>
                     {dados.itens.map((linha) => (
-                        <tr key={linha.id}>
+                        <tr key={linha.id} className={
+                                    linha.finalidade === "Despesa" ? "linha-despesa" : 
+                                    linha.finalidade === "Receita" ? "linha-receita" : 
+                                    linha.finalidade === "Ambas" ? "linha-ambas" : ""
+                                }>
                             <td><strong>{linha.descricao}</strong></td>
                             <td>
                                 <span className={
@@ -175,7 +179,6 @@ export const ListaCategorias: React.FC = () => {
                                         <select 
                                             value={editFinalidade} 
                                             onChange={(e) => setEditFinalidade(e.target.value)}
-                                            style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid #d1d5db' }}
                                             required
                                         >
                                             <option value="Despesa">Despesa</option>
